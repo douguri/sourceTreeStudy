@@ -1,0 +1,3 @@
+var server = http.createServer(app);
+var socket = require('../models/socket');
+socket(server);

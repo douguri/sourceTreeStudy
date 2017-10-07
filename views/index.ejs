@@ -1,5 +1,26 @@
 <html>
 <body>
-    <h1>New Project</h1>
+    <h1>Twitterでログイン</h1>
+    <% if(Object.keys(session).length > 0) { %>
+    <div><img src="<%= session.user.photos[0].value %>"></div>
+    <div><%= session.user.displayName %></div>
+<% } else { %>
+    <a href="/oauth" class="btn-large waves-effect waves-light" style="text-transform: none;">Twitterでログイン</a>
+<% } %>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  $(function(){
+    var socket = io();
+    socket.emit('msg', "msg");
+    socket.on('msg', function(data){
+      console.log (data);
+    });
+    socket.on('tw', function(data){
+      console.log (data);
+    });
+  });
+  </script>
+  
 </body>
 </html>

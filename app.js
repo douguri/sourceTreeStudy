@@ -1,42 +1,26 @@
-/* 1. expressモジュールをロードし、インスタンス化してappに代入。*/
-var express = require("express");
+'use strict';
+var http = require('http');
+var express = require('express');
+// passport-twitter用
+var session = require('express-session')
+var auth = require('./passport');
+var passport = auth.passport;
+// ルーティングファイルを指定
+var routes = require('./routes/routes');
 var app = express();
+var server = http.createServer(app);
 
-/* 2. listen()メソッドを実行して3000番ポートで待ち受け。*/
-var server = app.listen(3000, function(){
-    console.log("Node.js is listening to PORT:" + server.address().port);
-});
-
-/* 3. 以後、アプリケーション固有の処理 */
-
-// 写真のサンプルデータ
-var photoList = [
-    {
-        id: "001",
-        name: "photo001.jpg",
-        type: "jpg",
-        dataUrl: "http://localhost:3000/data/photo001.jpg"
-    },{
-        id: "002",
-        name: "photo002.jpg",
-        type: "jpg",
-        dataUrl: "http://localhost:3000/data/photo002.jpg"
-    }
-]
-
-// 写真リストを取得するAPI
-app.get("/api/photo/list", function(req, res, next){
-    res.json(photoList);
-});
-
-var twitter = require('twitter');
-// View EngineにEJSを指定。
-app.set('view engine', 'ejs');
-
-// "/"へのGETリクエストでindex.ejsを表示する。拡張子（.ejs）は省略されていることに注意。
-app.get("/", function(req, res, next){
-    res.render("index", {});
-});
+// passport-twitter用
+app.use(passport.initialize()); 
+app.use(passport.session()); 
+app.use(session({secret: 'itagaki'}));
+// 静的ファイルのルートディレクトリを指定
+app.use(express.static(__dirname + '/public'));
+// ルーティングを設定
+routes.configRoutes(app, server, passport);
+// リッスン
+server.listen(3000);
+console.log('Listening on port %d in %s mode', server.address().port, app.settings.env);
 
 
 
