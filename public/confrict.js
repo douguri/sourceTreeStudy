@@ -1,3 +1,2 @@
-const test = "confrictA";
-
+const test = 'confrict';
 console.log(test);
